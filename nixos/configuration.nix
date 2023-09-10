@@ -39,11 +39,6 @@
 
     systemPackages = with pkgs; [
       neovim
-      wine
-      winetricks
-      wineWowPackages.stable
-      wineWowPackages.staging
-      (wine.override { wineBuild = "wine64"; })
     ];
   };
 
@@ -163,9 +158,17 @@
       packages = with pkgs; [
         firefox
 	git
+	gnupg
+	kitty
         lutris
         pavucontrol
+	pinentry
         vulkan-tools
+      	wine
+      	winetricks
+        wineWowPackages.stable
+        wineWowPackages.staging
+        (wine.override { wineBuild = "wine64"; })
       ];
     };
   };
