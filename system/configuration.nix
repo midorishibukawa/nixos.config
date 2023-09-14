@@ -1,26 +1,8 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ 
-      ./hardware-configuration.nix
-    ];
-
-  boot = {
-
-    initrd = {
-      luks.devices."luks-b618c3bf-eb2d-4eee-a974-856d52962886" = {
-        device = "/dev/disk/by-uuid/b618c3bf-eb2d-4eee-a974-856d52962886";
-	keyFile = "/crypto_keyfile.bin";
-      };
-      secrets."/crypto_keyfile.bin" = null;
-    };
-
-    loader = {
-      efi.canTouchEfiVariables = true;
-      systemd-boot.enable = true;
-    };
-  };
+  imports = [ 
+  ];
 
   console.keyMap = "br-abnt2";
 
@@ -38,33 +20,11 @@
     };
 
     systemPackages = with pkgs; [
+      git
       neovim
     ];
   };
 
-  hardware = {
-    bluetooth.enable = true;
-
-    nvidia = {
-      modesetting.enable = true;
-      nvidiaSettings = true;
-      open = false;
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
-      powerManagement.enable = true;
-    };
-
-    opengl = {
-      driSupport = true;
-      driSupport32Bit = true;
-      enable = true;
-    };
-
-    pulseaudio = {
-      enable = false;
-      support32Bit = true;
-    };
-  };
-  
   i18n = {
     defaultLocale = "en_GB.UTF-8";
 
@@ -81,11 +41,7 @@
     };
   };
   
-
-  networking = {
-    hostName = "midori-nixos";
-    networkmanager.enable = true;
-  };
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   nixpkgs.config.allowUnfree = true;
 
