@@ -13,8 +13,8 @@
 ## MEDIUM PRIORITY
 
 - [ ] add docker
-- [ ] add home manager
-- [ ] use flakes
+- [x] add home manager
+- [x] use flakes
 
 ## LOW PRIORITY
 
