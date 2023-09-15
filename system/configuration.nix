@@ -1,8 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ 
-  ];
+  imports = [ ];
 
   console.keyMap = "br-abnt2";
 
@@ -112,19 +111,6 @@
       extraGroups = [ "networkmanager" "wheel" ];
 
       packages = with pkgs; [
-        firefox
-	git
-	gnupg
-	kitty
-        lutris
-        pavucontrol
-	pinentry
-        vulkan-tools
-      	wine
-      	winetricks
-        wineWowPackages.stable
-        wineWowPackages.staging
-        (wine.override { wineBuild = "wine64"; })
       ];
     };
   };
