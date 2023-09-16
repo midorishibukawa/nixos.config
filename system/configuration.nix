@@ -71,12 +71,12 @@
         };
 
         xserver = {
-            displayManager.lightdm.enable = true;
+            # displayManager.lightdm.enable = true;
             enable = true;
             layout = "br";
             videoDrivers = ["nvidia"];
             xkbVariant = "";
-            xkbOptions = "escape:swapcaps";
+            xkbOptions = "caps:escape";
 
             windowManager.xmonad = {
                 enable = true;
