@@ -14,9 +14,9 @@
       lutris
       pavucontrol
       pinentry
+      tmux
       vulkan-tools
-      wine
-      winetricks
+      wineWowPackages.staging
     ];
   };
 

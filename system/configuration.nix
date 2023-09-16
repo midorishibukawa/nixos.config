@@ -60,6 +60,7 @@
     zsh = {
       enable = true;
       histSize = 10000;
+      histFile = "/home/midori/.local/data/zsh/history";
       
       shellAliases = {
         ll = "ls -l";
@@ -109,9 +110,6 @@
       isNormalUser = true;
       description = "midori";
       extraGroups = [ "networkmanager" "wheel" ];
-
-      packages = with pkgs; [
-      ];
     };
   };
 
