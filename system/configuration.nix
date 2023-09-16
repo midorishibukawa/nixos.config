@@ -19,8 +19,6 @@
     };
 
     systemPackages = with pkgs; [
-      git
-      neovim
     ];
   };
 
@@ -45,18 +43,6 @@
   nixpkgs.config.allowUnfree = true;
 
   programs = {
-    
-    neovim = {
-      enable = true;
-      defaultEditor = true;
-    };
-    
-    steam = {
-      enable = true;
-      remotePlay.openFirewall = true;
-      dedicatedServer.openFirewall = true;
-    };
-
     zsh = {
       enable = true;
       histSize = 10000;
