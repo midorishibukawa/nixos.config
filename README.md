@@ -7,8 +7,8 @@
 - [ ] add xmonadctl
 - [ ] add sxhkd
 - [ ] add rofi
-- [ ] add neovim config
 - [ ] change keybinds
+- [x] add neovim config
 
 ## MEDIUM PRIORITY
 
@@ -23,3 +23,4 @@
 - [ ] add colour palette theme
 - [ ] add feh
 - [ ] add screenshot application
+- [x] add kitty config
