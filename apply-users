@@ -1,3 +1,5 @@
 #!/bin/sh
+pushd $XDG_CONFIG_HOME/nixos.config
 nix build .#homeManagerConfigurations.midori.activationPackage
 ./result/activate
+popd

@@ -1,6 +1,4 @@
 #!/bin/sh
 pushd $XDG_CONFIG_HOME/nixos.config
-nix flake update
-./apply-system
-./apply-users
+sudo nixos-rebuild switch --flake .#
 popd
