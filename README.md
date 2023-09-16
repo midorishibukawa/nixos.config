@@ -5,9 +5,9 @@
 - [ ] add xmonad config
 - [ ] add xmobar
 - [ ] add xmonadctl
-- [ ] add sxhkd
-- [ ] add rofi
 - [ ] change keybinds
+- [x] add sxhkd
+- [x] add rofi
 - [x] add neovim config
 
 ## MEDIUM PRIORITY
@@ -21,7 +21,7 @@
 - [ ] change fonts
 - [ ] change cursor theme
 - [ ] add feh
-- [ ] add screenshot application
+- [x] add screenshot application
 - [x] add starship
 - [x] add colour palette theme
 - [x] add kitty config
