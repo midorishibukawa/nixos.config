@@ -1,4 +1,0 @@
-alt + {_,shift + } Return
-  {kitty,rofi -show drun}
-
-

@@ -16,7 +16,6 @@
             scrot
             xclip
             rofi
-            sxhkd
             lutris
             vulkan-tools
             wineWowPackages.staging
@@ -40,6 +39,7 @@
             XDG_DATA_HOME = "$HOME/.local/data";
             XDG_STATE_HOME = "$HOME/.local/state";
             STARSHIP_CONFIG = "$XDG_CONFIG_HOME/starship.toml";
+            ZDOTDIR = "XDG_CONFIG_HOME/zsh";
         };
     };
 
@@ -92,6 +92,14 @@
             shellAliases = {
                 ls = "ls -a --color=auto";
                 ll = "ls -lah --color=auto";
+                ga = "git add";
+                gcm = "git commit -m";
+                gco = "git checkout";
+                gi = "git init";
+                gps = "git push";
+                gpl = "git pull";
+                gs = "git status";
+                update = "$XDG_CONFIG_HOME/nixos.config/bin/update";
             };
 
             zplug = {
@@ -114,10 +122,6 @@
             };
             nvim = {
                 source = ./config/nvim;
-                recursive = true;
-            };
-            sxhkd = {
-                source = ./config/sxhkd;
                 recursive = true;
             };
         };

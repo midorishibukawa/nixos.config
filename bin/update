@@ -1,0 +1,4 @@
+#!/bin/sh
+pushd $XDG_CONFIG_HOME/nixos.config
+nix flake update && ./bin/apply-system && ./bin/apply-users
+popd

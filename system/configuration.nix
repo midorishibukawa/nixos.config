@@ -18,11 +18,16 @@
             XDG_DATA_HOME = "$HOME/.local/data";
             XDG_STATE_HOME = "$HOME/.local/state";
             STARSHIP_CACHE = "$XDG_CACHE_HOME/starship/cache";
+            ZDOTDIR = "$XDG_CONFIG_HOME/zsh";
         };
 
         systemPackages = with pkgs; [
         ];
     };
+    
+    fonts.fonts = with pkgs; [
+        (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    ];
 
     i18n = {
         defaultLocale = "en_GB.UTF-8";
@@ -71,7 +76,7 @@
         };
 
         xserver = {
-            # displayManager.lightdm.enable = true;
+            displayManager.lightdm.enable = true;
             enable = true;
             layout = "br";
             videoDrivers = ["nvidia"];
