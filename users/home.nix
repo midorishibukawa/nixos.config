@@ -1,70 +1,120 @@
 { config, pkgs, lib, ... }:
 
 {
-  home = {
-    username = "midori";
-    homeDirectory = "/home/midori";
-    stateVersion = "23.05";
-
-    packages = with pkgs; [
-      firefox
-      tmux
+    home = {
+        username = "midori";
+        homeDirectory = "/home/midori";
+        stateVersion = "23.05";
+    
+        packages = with pkgs; [
+            firefox
+            tmux  
+            gnupg
+            pinentry
       
-      gnupg
-      pinentry
-      
-      pavucontrol
-      scrot
-      
-      lutris
-      vulkan-tools
-      wineWowPackages.staging
-      
-      cabal-install
-      cabal2nix
-      haskell-language-server
-      stylish-haskell
+            pavucontrol
+            scrot
+            xclip
+            sxhkd
+            lutris
+            vulkan-tools
+            wineWowPackages.staging
 
-      lua-language-server
+            cabal-install
+            cabal2nix
+            haskell-language-server
+            stylish-haskell
 
-      typescript-language-server
-    ];
-  };
+            lua-language-server
 
-  services.picom.enable = true;
+            nil
 
-  programs = {
-    home-manager.enable = true;
+        ];
 
-    git = {
-      enable = true;
-      userName = "midori shibukawa";
-      userEmail = "midori@shibukawa.io";
+        sessionVariables = {
+            NIX_DATA_DIR = "$HOME/.local/etc/nix";
+            XDG_BIN_HOME = "$HOME/.local/bin";
+            XDG_CACHE_HOME = "$HOME/.local/cache";
+            XDG_CONFIG_HOME = "$HOME/.local/config";
+            XDG_DATA_HOME = "$HOME/.local/data";
+            XDG_STATE_HOME = "$HOME/.local/state";
+            STARSHIP_CONFIG = "$XDG_CONFIG_HOME/starship.toml";
+        };
     };
 
-    kitty = {
-      enable = true;
-      extraConfig = lib.fileContents ./config/kitty/kitty.conf;
+    services.picom.enable = true;
+
+    programs = {
+        home-manager.enable = true;
+
+        git = {
+            enable = true;
+            userName = "midorishibukawa";
+            userEmail = "midori@shibukawa.io";
+        };
+
+        kitty = {
+            enable = true;
+        };
+
+        neovim = {
+            enable = true;
+
+            plugins = with pkgs.vimPlugins; [
+                lsp-zero-nvim
+                nvim-lspconfig
+                nvim-cmp
+                cmp-buffer
+                cmp-path
+                cmp_luasnip
+                cmp-nvim-lsp
+                cmp-nvim-lua
+                friendly-snippets
+                (nvim-treesitter.withPlugins (p: with p; 
+                    [ c css haskell html java javascript lua nix ocaml rust typescript ]))
+        	    rose-pine
+                telescope-nvim
+            ];
+        };
+        starship = {
+            enable = true;
+            enableZshIntegration = true;
+            settings = lib.importTOML ./config/starship.toml;
+        };
+        zsh = {
+            autocd = true;
+            dotDir = ".local/config/zsh";
+            enableAutosuggestions = true;
+            enableCompletion = true;
+            enable = true;
+
+            shellAliases = {
+                ls = "ls -a --color=auto";
+                ll = "ls -lah --color=auto";
+            };
+
+            zplug = {
+                enable = true;
+                plugins = [
+                {   name = "zsh-users/zsh-autosuggestions"; }
+                {   name = "zsh-users/zsh-syntax-highlighting"; }
+                {   name = "zsh-users/zsh-completions"; }
+                {   name = "zsh-users/zsh-history-substring-search"; }];
+            };
+        };
     };
 
-    neovim = {
-      enable = true;
-      extraConfig = lib.fileContents ./config/nvim/init.lua;
-
-      plugins = with pkgs.vimPlugins; [
-        lsp-zero-nvim
-	nvim-lspconfig
-	nvim-cmp
-	cmp-buffer
-	cmp-path
-	cmp_luasnip
-	cmp-nvim-lsp
-	cmp-nvim-lua
-	friendly-snippets
-	(nvim-treesitter.withPlugins (p: with p; [ c css haskell html java javascript lua nix ocaml rust typescript ]))
-	rose-pine
-        telescope-nvim
-      ];
+    xdg = {
+        configFile = {
+            kitty = {
+                source = ./config/kitty;
+                recursive = true;
+            };
+            nvim = {
+                source = ./config/nvim;
+                recursive = true;
+            };
+        };
+        configHome = "/home/midori/.local/config/";
     };
-  };
 }

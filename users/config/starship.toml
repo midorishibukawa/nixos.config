@@ -1,0 +1,11 @@
+add_newline = false
+right_format = """$time"""
+
+[sudo]
+format = "[$symbol]($style)"
+symbol = "🔓 "
+disabled = false
+
+[time]
+format = "[$time ]($style)"
+disabled = false
