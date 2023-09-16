@@ -20,7 +20,8 @@
 
 - [ ] change fonts
 - [ ] change cursor theme
-- [ ] add colour palette theme
 - [ ] add feh
 - [ ] add screenshot application
+- [x] add starship
+- [x] add colour palette theme
 - [x] add kitty config
