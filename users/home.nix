@@ -20,6 +20,8 @@
             vulkan-tools
             wineWowPackages.staging
 
+            neofetch
+
             cabal-install
             cabal2nix
             ghc
@@ -32,6 +34,14 @@
 
             haskellPackages.xmobar
 
+            (picom.overrideAttrs({
+                src = pkgs.fetchFromGitHub {
+                    repo = "picom";
+                        owner = "ibhagwan";
+                        rev = "44b4970f70d6b23759a61a2b94d9bfb4351b41b1";
+                        sha256 = "0iff4bwpc00xbjad0m000midslgx12aihs33mdvfckr75r114ylh";
+                };
+            }))
         ];
 
         sessionVariables = {
@@ -46,7 +56,17 @@
         };
     };
 
-    services.picom.enable = true;
+    services.picom = {
+        enable = true;
+        package = pkgs.picom.overrideAttrs(o: {
+            src = pkgs.fetchFromGitHub {
+                repo = "picom";
+                owner = "ibhagwan";
+                rev = "44b4970f70d6b23759a61a2b94d9bfb4351b41b1";
+                sha256 = "0iff4bwpc00xbjad0m000midslgx12aihs33mdvfckr75r114ylh";
+            };
+        });
+    };
 
     programs = {
         home-manager.enable = true;
@@ -90,7 +110,7 @@
         };
         zsh = {
             autocd = true;
-            dotDir = ".local/config/zsh";
+            dotDir = "$XDG_CONFIG_HOME/zsh";
             enableAutosuggestions = true;
             enableCompletion = true;
             enable = true;
@@ -128,6 +148,10 @@
             };
             nvim = {
                 source = ./config/nvim;
+                recursive = true;
+            };
+            picom = {
+                source = ./config/picom; 
                 recursive = true;
             };
             xmonad = {

@@ -24,12 +24,16 @@ import XMonad.Layout.WindowArranger (windowArrange)
 import XMonad.Layout.WindowNavigation
 import XMonad.Util.EZConfig (additionalKeysP)
 import XMonad.Util.Run (spawnPipe)
+import XMonad.Util.SpawnOnce
 import System.Exit (exitSuccess)
 import System.IO (hPutStrLn)
 import qualified Data.Map as M
 import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(Toggle))
 import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
 import qualified XMonad.StackSet as W
+
+myFont :: String 
+myFont = "xft:JetBrainsMono Nerd Font Mono:regular:size=11:antialias=true:hinting=true"
 
 myTerminal :: String 
 myTerminal = "kitty"
@@ -44,6 +48,38 @@ switchWorkspace :: Int -> (String, X ())
 switchWorkspace i = ("M-" ++ i', windows $ W.greedyView $ myWorkspaces' !! i)
                 where i' = show i
 
+sendToWorkspace :: Int -> (String, X ())
+sendToWorkspace i = ("M-S-" ++ i', windows $ W.shift $ myWorkspaces' !! i)
+                where i' = show i
+
+defaultColor :: String
+defaultColor = "#faf4ed"
+
+data Shade  = Base | Surface | Overlay | Muted | Subtle | Text -- grayscale
+            | Love | Gold    | Rose    | Pine  | Foam   | Iris -- colors
+            deriving (Read, Show, Enum, Eq, Ord)
+
+myColors :: M.Map (Shade) (String)
+myColors = M.fromList
+        ([(Base   , defaultColor)
+        , (Surface, "#fffaf3")
+        , (Overlay, "#f2e9e1")
+        , (Muted  , "#9893a5")
+        , (Subtle , "#797593")
+        , (Text   , "#575279")
+        , (Love   , "#b4637a")
+        , (Gold   , "#ea9d34")
+        , (Rose   , "#d7827e")
+        , (Pine   , "#286983")
+        , (Foam   , "#56949f")
+        , (Iris   , "#907aa9")
+        ])
+
+myColor :: Shade -> String -> String
+myColor colorName = case M.lookup colorName myColors of
+    Just color -> xmobarColor color "" 
+    Nothing    -> xmobarColor defaultColor ""
+
 myKeys :: [(String, X ())]
 myKeys =
     [ ("M-C-r"          , spawn "xmonad --recompile"                                    )
@@ -57,7 +93,9 @@ myKeys =
     , ("M-t"            , withFocused $ windows . W.sink                                )
     , ("M-S-t"          , sinkAll                                                       )
     , ("M-<Space>"      , sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts    )
-    ] ++ map switchWorkspace myWorkspaces
+    ] 
+    ++ map switchWorkspace myWorkspaces
+    ++ map sendToWorkspace myWorkspaces
 
 myLogHook :: X ()
 myLogHook = fadeInactiveLogHook 0.8
@@ -72,8 +110,9 @@ tall = renamed [Replace "tall"]
         $ windowNavigation
         $ subLayout [] (smartBorders Simplest)
         $ limitWindows 12
-        $ mySpacing 8
+        $ mySpacing 2
         $ ResizableTall 1 (3/100) (1/2) []
+
 floats = renamed [Replace "floats"]
         $ windowNavigation
         $ subLayout [] (smartBorders Simplest)
@@ -90,6 +129,10 @@ myLayoutHook = avoidStruts
 myBorderWidth :: Dimension
 myBorderWidth = 0
 
+myStartupHook :: X ()
+myStartupHook = do
+    spawnOnce "picom --config $XDG_CONFIG_HOME/picom/picom.conf"
+
 main = do
     xmproc <- spawnPipe "xmobar $XDG_CONFIG_HOME/xmonad/xmobar.hs"
     xmonad $ ewmh $ docks $ def
@@ -99,15 +142,16 @@ main = do
         , terminal = myTerminal
         , workspaces = myWorkspaces'
         , borderWidth = myBorderWidth
+        , startupHook = myStartupHook
         , logHook = workspaceHistoryHook <+> myLogHook <+> dynamicLogWithPP xmobarPP
             { ppOutput = \x -> hPutStrLn xmproc x
-            , ppCurrent = xmobarColor "#98be65" "" . wrap "[" "]"
-            , ppVisible = xmobarColor "#98be65" "" 
-            , ppHidden = xmobarColor "#82AAFF" "" . wrap "*" ""
-            , ppHiddenNoWindows = xmobarColor "#c792ea" ""
-            , ppTitle = xmobarColor "#b3afc2" "" . shorten 60
+            , ppCurrent = (myColor Text) . wrap "[" "]"
+            , ppVisible = (myColor Text) 
+            , ppHidden = (myColor Text) . wrap "*" ""
+            , ppHiddenNoWindows = (myColor Text)
+            , ppTitle = (myColor Text) . shorten 60
             , ppSep =  "<fc=#666666> <fn=1>|</fn> </fc>"
-            , ppUrgent = xmobarColor "#C45500" "" . wrap "!" "!"
+            , ppUrgent = (myColor Text) .  wrap "!" "!"
             , ppExtras  = [windowCount]
             , ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[t]
             }
