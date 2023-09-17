@@ -2,10 +2,9 @@
 
 ## HIGH PRIORITY
 
-- [ ] add xmonad config
-- [ ] add xmobar
-- [ ] add xmonadctl
-- [ ] change keybinds
+- [x] add xmonad config
+- [x] add xmobar
+- [x] change keybinds
 - [x] add sxhkd
 - [x] add rofi
 - [x] add neovim config
