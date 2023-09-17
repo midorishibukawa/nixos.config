@@ -110,7 +110,7 @@
         };
         zsh = {
             autocd = true;
-            dotDir = "$XDG_CONFIG_HOME/zsh";
+            dotDir = ".local/config/zsh";
             enableAutosuggestions = true;
             enableCompletion = true;
             enable = true;
