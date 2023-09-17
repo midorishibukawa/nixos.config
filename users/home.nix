@@ -54,6 +54,9 @@
             enable = true;
             userName = "midorishibukawa";
             userEmail = "midori@shibukawa.io";
+            extraConfig = {
+                pull.rebase = true;
+            };
         };
 
         kitty = {
