@@ -7,11 +7,13 @@
         stateVersion = "23.05";
     
         packages = with pkgs; [
+            chromium
             firefox
             tmux  
             gnupg
             pinentry
-      
+
+            appimage-run
             pavucontrol
             p7zip
             scrot
@@ -19,7 +21,10 @@
             rofi
             lutris
             vulkan-tools
-            wineWowPackages.staging
+            (wineWowPackages.full.override {
+                wineRelease = "staging";
+                mingwSupport = true;
+            })
 
             neofetch
 
@@ -43,12 +48,6 @@
                         sha256 = "0iff4bwpc00xbjad0m000midslgx12aihs33mdvfckr75r114ylh";
                 };
             }))
-
-            (appimageTools.wrapType2 {
-                name = "curseforge";
-                src = ./CurseForge-0.231.2-12194.AppImage;
-                extraPkgs = pkgs: with pkgs [];
-            })
         ];
 
         sessionVariables = {
@@ -62,6 +61,8 @@
             ZDOTDIR = "XDG_CONFIG_HOME/zsh";
         };
     };
+
+    nixpkgs.config.allowUnfree = true;
 
     programs = {
         home-manager.enable = true;
@@ -126,10 +127,11 @@
             zplug = {
                 enable = true;
                 plugins = [
-                    { name = "zsh-users/zsh-autosuggestions"; }
-                    { name = "zsh-users/zsh-syntax-highlighting"; }
-                    { name = "zsh-users/zsh-completions"; }
-                    { name = "zsh-users/zsh-history-substring-search"; }
+                    { name = "zsh-users/zsh-autosuggestions";           }
+                    { name = "zsh-users/zsh-syntax-highlighting";       }
+                    { name = "zsh-users/zsh-completions";               }
+                    { name = "zsh-users/zsh-history-substring-search";  }
+                    { name = "jeffreytse/zsh-vi-mode";                  }
                 ];
             };
         };

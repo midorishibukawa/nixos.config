@@ -6,10 +6,10 @@ Config { font    = "xft:JetBrainsMono Nerd Fonts Mono:weight=bold:pixelsize=11:a
        , hideOnStart = False
        , allDesktops = True
        , persistent = True
-       , commands = [ Run Date "<fc=#ABABAB>%F (%a) %T</fc>" "date" 10
+       , commands = [ Run Date "%F (%a) %T" "date" 10
                     , Run UnsafeStdinReader
                     ]
-       , template = "  %UnsafeStdinReader% } %date% {"
+       , template = " %UnsafeStdinReader% } %date% {"
        , sepChar = "%"
        , alignSep = "}{"
        }

@@ -52,6 +52,11 @@
     nixpkgs.config.allowUnfree = true;
 
     programs = {
+        steam = {
+            enable = true;
+            remotePlay.openFirewall = true;
+            dedicatedServer.openFirewall = true;
+        };
         zsh = {
             enable = true;
             shellAliases = {

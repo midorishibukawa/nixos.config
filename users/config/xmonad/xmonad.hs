@@ -22,7 +22,7 @@ import XMonad.Layout.Spacing
 import XMonad.Layout.SubLayouts
 import XMonad.Layout.WindowArranger (windowArrange)
 import XMonad.Layout.WindowNavigation
-import XMonad.Util.EZConfig (additionalKeysP)
+import XMonad.Util.EZConfig (additionalKeysP, removeKeysP)
 import XMonad.Util.Run (spawnPipe)
 import XMonad.Util.SpawnOnce
 import System.Exit (exitSuccess)
@@ -38,19 +38,17 @@ myFont = "xft:JetBrainsMono Nerd Font Mono:regular:size=11:antialias=true:hintin
 myTerminal :: String 
 myTerminal = "kitty"
 
-myWorkspaces :: [Int]
-myWorkspaces = [0..9] 
+myWorkspaces :: [(Int, String)]
+myWorkspaces = map (\i -> (i, show $ if i == 10 then 0 else i)) $ [1..3] ++ [8..10] 
 
 myWorkspaces' :: [String]
-myWorkspaces' = map show myWorkspaces 
+myWorkspaces' = map (\(i, kb) -> kb) myWorkspaces
 
-switchWorkspace :: Int -> (String, X ())
-switchWorkspace i = ("M-" ++ i', windows $ W.greedyView $ myWorkspaces' !! i)
-                where i' = show i
+switchWorkspace :: (Int, String) -> (String, X ())
+switchWorkspace (i, kb) = ("M-" ++ kb, windows $ W.greedyView kb)
 
-sendToWorkspace :: Int -> (String, X ())
-sendToWorkspace i = ("M-S-" ++ i', windows $ W.shift $ myWorkspaces' !! i)
-                where i' = show i
+sendToWorkspace :: (Int, String) -> (String, X ())
+sendToWorkspace (i, kb)  = ("M-S-" ++ kb, windows $ W.shift kb)
 
 defaultColor :: String
 defaultColor = "#faf4ed"
@@ -93,12 +91,16 @@ myKeys =
     , ("M-t"            , withFocused $ windows . W.sink                                )
     , ("M-S-t"          , sinkAll                                                       )
     , ("M-<Space>"      , sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts    )
-    ] 
-    ++ map switchWorkspace myWorkspaces
-    ++ map sendToWorkspace myWorkspaces
+    ]
+    ++ concatMap (\ws -> [ switchWorkspace ws ] ++ [ sendToWorkspace ws ]) myWorkspaces
+
+myRemovedKeys :: [String]
+myRemovedKeys =
+    concatMap (\i -> [ "M-" ++ (show i) ] ++ [ "M-S-" ++ (show i) ]) [4..6]
+
 
 myLogHook :: X ()
-myLogHook = fadeInactiveLogHook 0.8
+myLogHook = fadeInactiveLogHook 0.9
 
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
@@ -122,9 +124,7 @@ myLayoutHook = avoidStruts
                 $ mouseResize 
                 $ windowArrange 
                 $ T.toggleLayouts floats
-                $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
-            where
-                myDefaultLayout = tall
+                $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) tall
 
 myBorderWidth :: Dimension
 myBorderWidth = 0
@@ -145,14 +145,14 @@ main = do
         , startupHook = myStartupHook
         , logHook = workspaceHistoryHook <+> myLogHook <+> dynamicLogWithPP xmobarPP
             { ppOutput = \x -> hPutStrLn xmproc x
-            , ppCurrent = (myColor Text) . wrap "[" "]"
-            , ppVisible = (myColor Text) 
-            , ppHidden = (myColor Text) . wrap "*" ""
-            , ppHiddenNoWindows = (myColor Text)
+            , ppCurrent = \_ -> myColor Text $ "\xf111 " 
+            , ppVisible = \_ -> myColor Text $ "\xf1db "
+            , ppHidden = \_ -> myColor Muted $ "\xf111 "
+            , ppHiddenNoWindows = \_ -> myColor Muted $ "\xf1db "
             , ppTitle = (myColor Text) . shorten 60
-            , ppSep =  "<fc=#666666> <fn=1>|</fn> </fc>"
-            , ppUrgent = (myColor Text) .  wrap "!" "!"
-            , ppExtras  = [windowCount]
-            , ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[t]
+            , ppUrgent = \_ -> myColor Rose $ "\xf06a "
+            , ppSep =  myColor Text $ "\xf460 "
+            , ppOrder  = \(ws:_:t:_) -> [ws]++[t]
             }
         } `additionalKeysP` myKeys
+        `removeKeysP` myRemovedKeys
