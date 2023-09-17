@@ -22,6 +22,7 @@
 
             cabal-install
             cabal2nix
+            ghc
             haskell-language-server
             stylish-haskell
 

@@ -21,8 +21,9 @@
             ZDOTDIR = "$XDG_CONFIG_HOME/zsh";
         };
 
-        systemPackages = with pkgs; [
-        ];
+        systemPackages = with pkgs; 
+            [ xmonad-with-packages
+            ];
     };
     
     fonts.fonts = with pkgs; [
