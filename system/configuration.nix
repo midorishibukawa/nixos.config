@@ -84,6 +84,7 @@
             xkbOptions = "caps:escape";
 
             windowManager.xmonad = {
+                config = builtins.readFile ../users/config/xmonad/xmonad.hs;
                 enable = true;
                 enableContribAndExtras = true;
             };

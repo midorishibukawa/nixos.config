@@ -29,6 +29,8 @@
 
             nil
 
+            haskellPackages.xmobar
+
         ];
 
         sessionVariables = {
@@ -122,6 +124,10 @@
             };
             nvim = {
                 source = ./config/nvim;
+                recursive = true;
+            };
+            xmonad = {
+                source = ./config/xmonad;
                 recursive = true;
             };
         };
