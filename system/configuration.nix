@@ -21,9 +21,10 @@
             ZDOTDIR = "$XDG_CONFIG_HOME/zsh";
         };
 
-        systemPackages = with pkgs; 
-            [ xmonad-with-packages
-            ];
+        systemPackages = with pkgs; [ 
+            xmonad-with-packages
+            xorg.xmodmap
+        ];
     };
     
     fonts.fonts = with pkgs; [
@@ -77,7 +78,10 @@
         };
 
         xserver = {
-            displayManager.lightdm.enable = true;
+            displayManager = {
+                lightdm.enable = true;
+                sessionCommands = "xmodmap -e \"keycode 9 = apostrophe quotedbl apostrophe quotedbl\"";
+            };
             enable = true;
             layout = "br";
             videoDrivers = ["nvidia"];

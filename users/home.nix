@@ -13,6 +13,7 @@
             pinentry
       
             pavucontrol
+            p7zip
             scrot
             xclip
             rofi
@@ -42,6 +43,12 @@
                         sha256 = "0iff4bwpc00xbjad0m000midslgx12aihs33mdvfckr75r114ylh";
                 };
             }))
+
+            (appimageTools.wrapType2 {
+                name = "curseforge";
+                src = ./CurseForge-0.231.2-12194.AppImage;
+                extraPkgs = pkgs: with pkgs [];
+            })
         ];
 
         sessionVariables = {
@@ -54,18 +61,6 @@
             STARSHIP_CONFIG = "$XDG_CONFIG_HOME/starship.toml";
             ZDOTDIR = "XDG_CONFIG_HOME/zsh";
         };
-    };
-
-    services.picom = {
-        enable = true;
-        package = pkgs.picom.overrideAttrs(o: {
-            src = pkgs.fetchFromGitHub {
-                repo = "picom";
-                owner = "ibhagwan";
-                rev = "44b4970f70d6b23759a61a2b94d9bfb4351b41b1";
-                sha256 = "0iff4bwpc00xbjad0m000midslgx12aihs33mdvfckr75r114ylh";
-            };
-        });
     };
 
     programs = {
