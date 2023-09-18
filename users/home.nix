@@ -19,6 +19,8 @@
             scrot
             xclip
             rofi
+            rofimoji
+            rofi-bluetooth
             lutris
             vulkan-tools
             (wineWowPackages.full.override {
@@ -159,8 +161,16 @@
                 source = ./config/picom; 
                 recursive = true;
             };
+            rofi = {
+                source = ./config/rofi;
+                recursive = true; 
+            };
             xmonad = {
                 source = ./config/xmonad;
+                recursive = true;
+            };
+            X11 = {
+                source =./config/X11;
                 recursive = true;
             };
         };

@@ -1,4 +1,4 @@
-Config { font    = "xft:JetBrainsMono Nerd Fonts Mono:weight=bold:pixelsize=11:antialias=true:hinting=true"
+Config { font    = "xft:SauceCodePro Nerd Fonts:weight=bold:pixelsize=11:antialias=true:hinting=true"
        , bgColor = "#fffaf3"
        , fgColor = "#575279"
        , position = Static { xpos = 4, ypos = 4, width = 2552, height = 24 }

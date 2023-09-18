@@ -17,20 +17,28 @@
             XDG_CONFIG_HOME = "$HOME/.local/config";
             XDG_DATA_HOME = "$HOME/.local/data";
             XDG_STATE_HOME = "$HOME/.local/state";
+            XINITRC="$XDG_CONFIG_HOME/X11/xinitrc";
+            XSERVERRC="$XDG_CONFIG_HOME/X11/xserverrc";
             STARSHIP_CACHE = "$XDG_CACHE_HOME/starship/cache";
             ZDOTDIR = "$XDG_CONFIG_HOME/zsh";
+            USERXSESSION="$XDG_CACHE_HOME/X11/xsession";
+            USERXSESSIONRC="$XDG_CACHE_HOME/X11/xsessionrc";
+            ALTUSERXSESSION="$XDG_CACHE_HOME/X11/Xsession";
+            ERRFILE="$XDG_CACHE_HOME/X11/xsession-errors";
         };
 
         systemPackages = with pkgs; [
             bitwarden
             bitwarden-cli
+            feh
+            greetd.tuigreet
             xmonad-with-packages
             xorg.xmodmap
         ];
     };
     
     fonts.fonts = with pkgs; [
-        (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+        (nerdfonts.override { fonts = [ "JetBrainsMono" "SourceCodePro" ]; })
     ];
 
     i18n = {
@@ -74,6 +82,15 @@
         blueman.enable = true;
         printing.enable = true;
 
+        #greetd = {
+        #    enable = true;
+        #    settings = {
+        #        default_session = {
+        #            command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd $SHELL";
+        #        };
+        #    };
+        #};
+
         pipewire = {
             enable = true;
 
@@ -87,7 +104,9 @@
         xserver = {
             displayManager = {
                 lightdm.enable = true;
-                sessionCommands = "xmodmap -e \"keycode 9 = apostrophe quotedbl apostrophe quotedbl\"";
+                sessionCommands = 
+                    "xmodmap -e \"keycode 9 = apostrophe quotedbl apostrophe quotedbl\" &&\
+                     feh --bg-fill ../rose_pine_contourline.png";
             };
             enable = true;
             layout = "br";

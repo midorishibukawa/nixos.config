@@ -31,9 +31,11 @@ import qualified Data.Map as M
 import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(Toggle))
 import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
 import qualified XMonad.StackSet as W
+import Data.Time
+import Control.Monad.Cont (MonadIO(liftIO))
 
 myFont :: String
-myFont = "xft:JetBrainsMono Nerd Font Mono:regular:size=11:antialias=true:hinting=true"
+myFont = "xft:SauceCodePro Nerd Font:regular:size=11:antialias=true:hinting=true"
 
 myTerminal :: String
 myTerminal = "kitty"
@@ -42,7 +44,7 @@ myWorkspaces :: [(Int, String)]
 myWorkspaces = map (\i -> (i, show $ if i == 10 then 0 else i)) $ [1..3] ++ [8..10]
 
 myWorkspaces' :: [String]
-myWorkspaces' = map (\(i, kb) -> kb) myWorkspaces
+myWorkspaces' = map snd myWorkspaces
 
 switchWorkspace :: (Int, String) -> (String, X ())
 switchWorkspace (i, kb) = ("M-" ++ kb, windows $ W.greedyView kb)
@@ -78,6 +80,12 @@ myColor colorName = case M.lookup colorName myColors of
     Just color -> xmobarColor color ""
     Nothing    -> xmobarColor defaultColor ""
 
+screenshotPath :: String
+screenshotPath = "$HOME/media/images/screenshots/$(date +%Y-%m-%d_%H-%M-%S).jpg"
+
+myRemovedKeys :: [String]
+myRemovedKeys = concatMap (generateKey . show) [4..6]
+
 myKeys :: [(String, X ())]
 myKeys =
     [ ("M-C-r"          , spawn "xmonad --recompile"                                    )
@@ -91,11 +99,12 @@ myKeys =
     , ("M-t"            , withFocused $ windows . W.sink                                )
     , ("M-S-t"          , sinkAll                                                       )
     , ("M-<Space>"      , sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts    )
+    , ("M-S-e"          , spawn "rofimoji"                                              )
+    , ("M-S-b"          , spawn "rofi-bluetooth"                                        )
+    , ("<Print>"        , spawn $ "scrot " ++ screenshotPath                            )
     ]
     ++ concatMap (\ws -> switchWorkspace ws : [ sendToWorkspace ws ]) myWorkspaces
 
-myRemovedKeys :: [String]
-myRemovedKeys = concatMap (generateKey . show) [4..6]
 
 generateKey :: String -> [String]
 generateKey i = ("M-" ++ i) : ["M-S-" ++ i]
