@@ -32,14 +32,14 @@ import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(T
 import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
 import qualified XMonad.StackSet as W
 
-myFont :: String 
+myFont :: String
 myFont = "xft:JetBrainsMono Nerd Font Mono:regular:size=11:antialias=true:hinting=true"
 
-myTerminal :: String 
+myTerminal :: String
 myTerminal = "kitty"
 
 myWorkspaces :: [(Int, String)]
-myWorkspaces = map (\i -> (i, show $ if i == 10 then 0 else i)) $ [1..3] ++ [8..10] 
+myWorkspaces = map (\i -> (i, show $ if i == 10 then 0 else i)) $ [1..3] ++ [8..10]
 
 myWorkspaces' :: [String]
 myWorkspaces' = map (\(i, kb) -> kb) myWorkspaces
@@ -57,9 +57,9 @@ data Shade  = Base | Surface | Overlay | Muted | Subtle | Text -- grayscale
             | Love | Gold    | Rose    | Pine  | Foam   | Iris -- colors
             deriving (Read, Show, Enum, Eq, Ord)
 
-myColors :: M.Map (Shade) (String)
+myColors :: M.Map Shade String
 myColors = M.fromList
-        ([(Base   , defaultColor)
+        [(Base   , defaultColor)
         , (Surface, "#fffaf3")
         , (Overlay, "#f2e9e1")
         , (Muted  , "#9893a5")
@@ -71,11 +71,11 @@ myColors = M.fromList
         , (Pine   , "#286983")
         , (Foam   , "#56949f")
         , (Iris   , "#907aa9")
-        ])
+        ]
 
 myColor :: Shade -> String -> String
 myColor colorName = case M.lookup colorName myColors of
-    Just color -> xmobarColor color "" 
+    Just color -> xmobarColor color ""
     Nothing    -> xmobarColor defaultColor ""
 
 myKeys :: [(String, X ())]
@@ -92,11 +92,13 @@ myKeys =
     , ("M-S-t"          , sinkAll                                                       )
     , ("M-<Space>"      , sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts    )
     ]
-    ++ concatMap (\ws -> [ switchWorkspace ws ] ++ [ sendToWorkspace ws ]) myWorkspaces
+    ++ concatMap (\ws -> switchWorkspace ws : [ sendToWorkspace ws ]) myWorkspaces
 
 myRemovedKeys :: [String]
-myRemovedKeys =
-    concatMap (\i -> [ "M-" ++ (show i) ] ++ [ "M-S-" ++ (show i) ]) [4..6]
+myRemovedKeys = concatMap (generateKey . show) [4..6]
+
+generateKey :: String -> [String]
+generateKey i = ("M-" ++ i) : ["M-S-" ++ i]
 
 
 myLogHook :: X ()
@@ -120,9 +122,9 @@ floats = renamed [Replace "floats"]
         $ subLayout [] (smartBorders Simplest)
         $ limitWindows 20 simplestFloat
 
-myLayoutHook = avoidStruts 
-                $ mouseResize 
-                $ windowArrange 
+myLayoutHook = avoidStruts
+                $ mouseResize
+                $ windowArrange
                 $ T.toggleLayouts floats
                 $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) tall
 
@@ -144,15 +146,15 @@ main = do
         , borderWidth = myBorderWidth
         , startupHook = myStartupHook
         , logHook = workspaceHistoryHook <+> myLogHook <+> dynamicLogWithPP xmobarPP
-            { ppOutput = \x -> hPutStrLn xmproc x
-            , ppCurrent = \_ -> myColor Text $ "\xf111 " 
-            , ppVisible = \_ -> myColor Text $ "\xf1db "
-            , ppHidden = \_ -> myColor Muted $ "\xf111 "
-            , ppHiddenNoWindows = \_ -> myColor Muted $ "\xf1db "
-            , ppTitle = (myColor Text) . shorten 60
-            , ppUrgent = \_ -> myColor Rose $ "\xf06a "
-            , ppSep =  myColor Text $ "\xf460 "
-            , ppOrder  = \(ws:_:t:_) -> [ws]++[t]
+            { ppOutput          = hPutStrLn xmproc
+            , ppCurrent         = \_ -> myColor Text "\xf111 "
+            , ppVisible         = \_ -> myColor Text "\xf1db "
+            , ppHidden          = \_ -> myColor Muted "\xf111 "
+            , ppHiddenNoWindows = \_ -> myColor Muted "\xf1db "
+            , ppTitle           = myColor Text . shorten 60
+            , ppUrgent          = \_ -> myColor Rose "\xf06a "
+            , ppSep             = "\xf460 "
+            , ppOrder           = \(ws:_:t:_) -> ws : [t]
             }
         } `additionalKeysP` myKeys
         `removeKeysP` myRemovedKeys

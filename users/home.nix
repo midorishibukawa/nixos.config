@@ -31,13 +31,13 @@
             cabal-install
             cabal2nix
             ghc
-            haskell-language-server
             stylish-haskell
 
             lua-language-server
 
             nil
 
+            haskellPackages.haskell-language-server
             haskellPackages.xmobar
 
             (picom.overrideAttrs({
@@ -80,24 +80,30 @@
             enable = true;
         };
 
-        neovim = {
+        nixvim = {
             enable = true;
+            colorscheme = "rose-pine";
+            plugins = {
+                cmp-buffer.enable = true;
+                cmp-nvim-lsp.enable = true;
+                cmp-nvim-lua.enable = true;
+                cmp-path.enable = true;
+                cmp_luasnip.enable = true;
+                nvim-cmp.enable = true;
+                telescope.enable = true;
+                treesitter.enable = true;
+            };
 
-            plugins = with pkgs.vimPlugins; [
+            extraPlugins = with pkgs.vimPlugins; [
                 lsp-zero-nvim
-                nvim-lspconfig
-                nvim-cmp
-                cmp-buffer
-                cmp-path
-                cmp_luasnip
-                cmp-nvim-lsp
-                cmp-nvim-lua
                 friendly-snippets
-                (nvim-treesitter.withPlugins (p: with p; 
-                    [ c css haskell html java javascript lua nix ocaml rust typescript ]))
-        	    rose-pine
-                telescope-nvim
+                rose-pine
+                nvim-lspconfig
             ];
+
+            extraConfigLua = ''
+                ./config/nvim/lua/midori/init.lua
+            '';
         };
         starship = {
             enable = true;
@@ -122,16 +128,18 @@
                 gpl = "git pull";
                 gs = "git status";
                 update = "$XDG_CONFIG_HOME/nixos.config/bin/update";
+                vi = "nvim .";
+                v = "nvim";
             };
 
             zplug = {
                 enable = true;
                 plugins = [
-                    { name = "zsh-users/zsh-autosuggestions";           }
-                    { name = "zsh-users/zsh-syntax-highlighting";       }
-                    { name = "zsh-users/zsh-completions";               }
-                    { name = "zsh-users/zsh-history-substring-search";  }
-                    { name = "jeffreytse/zsh-vi-mode";                  }
+                { name = "zsh-users/zsh-autosuggestions";           }
+                { name = "zsh-users/zsh-syntax-highlighting";       }
+                { name = "zsh-users/zsh-completions";               }
+                { name = "zsh-users/zsh-history-substring-search";  }
+                { name = "jeffreytse/zsh-vi-mode";                  }
                 ];
             };
         };
