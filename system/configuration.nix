@@ -21,7 +21,9 @@
             ZDOTDIR = "$XDG_CONFIG_HOME/zsh";
         };
 
-        systemPackages = with pkgs; [ 
+        systemPackages = with pkgs; [
+            bitwarden
+            bitwarden-cli
             xmonad-with-packages
             xorg.xmodmap
         ];
