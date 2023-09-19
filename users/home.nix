@@ -5,7 +5,7 @@
         username = "midori";
         homeDirectory = "/home/midori";
         stateVersion = "23.05";
-    
+
         packages = with pkgs; [
             chromium
             firefox
@@ -13,11 +13,13 @@
             gnupg
             pinentry
 
+            lightly-boehs
             appimage-run
             pavucontrol
             p7zip
             scrot
             xclip
+            xdotool
             rofi
             rofimoji
             rofi-bluetooth
@@ -63,10 +65,20 @@
             ZDOTDIR = "XDG_CONFIG_HOME/zsh";
         };
     };
+        
+        gtk = {
+            enable = true;
+            theme = {
+                name = "lightly";
+                package = pkgs.lightly-boehs;
+            };
+        };
+    
 
     nixpkgs.config.allowUnfree = true;
 
     programs = {
+        dconf.enable = true;
         home-manager.enable = true;
 
         git = {
@@ -149,6 +161,10 @@
 
     xdg = {
         configFile = {
+            "gtk-3.0" = {
+                source = ./config/gtk-3.0;
+                recursive = true; 
+            };
             kitty = {
                 source = ./config/kitty;
                 recursive = true;

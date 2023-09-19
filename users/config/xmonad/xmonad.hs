@@ -102,6 +102,7 @@ myKeys =
     , ("M-S-e"          , spawn "rofimoji"                                              )
     , ("M-S-b"          , spawn "rofi-bluetooth"                                        )
     , ("<Print>"        , spawn $ "scrot " ++ screenshotPath                            )
+    , ("M-<Print>"      , spawn $ "scrot --select " ++ screenshotPath                            )
     ]
     ++ concatMap (\ws -> switchWorkspace ws : [ sendToWorkspace ws ]) myWorkspaces
 
@@ -143,6 +144,7 @@ myBorderWidth = 0
 myStartupHook :: X ()
 myStartupHook = do
     spawnOnce "picom --config $XDG_CONFIG_HOME/picom/picom.conf"
+    spawnOnce "feh --bg-center $XDG_STATE_HOME/background.png"
 
 main = do
     xmproc <- spawnPipe "xmobar $XDG_CONFIG_HOME/xmonad/xmobar.hs"
@@ -156,7 +158,7 @@ main = do
         , startupHook = myStartupHook
         , logHook = workspaceHistoryHook <+> myLogHook <+> dynamicLogWithPP xmobarPP
             { ppOutput          = hPutStrLn xmproc
-            , ppCurrent         = \_ -> myColor Text "\xf111 "
+            , ppCurrent         = \_ -> myColor Love "\xf111 "
             , ppVisible         = \_ -> myColor Text "\xf1db "
             , ppHidden          = \_ -> myColor Muted "\xf111 "
             , ppHiddenNoWindows = \_ -> myColor Muted "\xf1db "

@@ -6,10 +6,10 @@ Config { font    = "xft:SauceCodePro Nerd Fonts:weight=bold:pixelsize=11:antiali
        , hideOnStart = False
        , allDesktops = True
        , persistent = True
-       , commands = [ Run Date "%F (%a) %T" "date" 10
+       , commands = [ Run Date "%T" "date" 10
                     , Run UnsafeStdinReader
                     ]
-       , template = " %UnsafeStdinReader% } %date% {"
+       , template = "  %UnsafeStdinReader% } <action=xdotool key super+return>%date%</action> {"
        , sepChar = "%"
        , alignSep = "}{"
        }

@@ -82,14 +82,15 @@
         blueman.enable = true;
         printing.enable = true;
 
-        #greetd = {
-        #    enable = true;
-        #    settings = {
-        #        default_session = {
-        #            command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd $SHELL";
-        #        };
-        #    };
-        #};
+        greetd = {
+            enable = false;
+            settings = {
+                default_session = {
+                    command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd $SHELL";
+                    user = "midori";
+                };
+            };
+        };
 
         pipewire = {
             enable = true;
@@ -103,10 +104,8 @@
 
         xserver = {
             displayManager = {
-                lightdm.enable = true;
-                sessionCommands = 
-                    "xmodmap -e \"keycode 9 = apostrophe quotedbl apostrophe quotedbl\" &&\
-                     feh --bg-fill ../rose_pine_contourline.png";
+  		        lightdm.enable = true;
+                sessionCommands = "xmodmap -e \"keycode 9 = apostrophe quotedbl apostrophe quotedbl\"";
             };
             enable = true;
             layout = "br";
