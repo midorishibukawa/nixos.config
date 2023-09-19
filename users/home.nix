@@ -78,7 +78,6 @@
     nixpkgs.config.allowUnfree = true;
 
     programs = {
-        dconf.enable = true;
         home-manager.enable = true;
 
         git = {
@@ -178,7 +177,7 @@
                 recursive = true;
             };
             rofi = {
-                source = ./config/rofi;
+                source = ./config/rofi/files;
                 recursive = true; 
             };
             xmonad = {
