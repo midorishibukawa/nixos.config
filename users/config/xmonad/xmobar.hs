@@ -9,7 +9,7 @@ Config { font    = "xft:SauceCodePro Nerd Fonts:weight=bold:pixelsize=11:antiali
        , commands = [ Run Date "%T" "date" 10
                     , Run UnsafeStdinReader
                     ]
-       , template = "  %UnsafeStdinReader% } <action=xdotool key super+return>%date%</action> {"
+       , template = "  %UnsafeStdinReader% } <action=xdotool key super+shift+return>%date%</action> {"
        , sepChar = "%"
        , alignSep = "}{"
        }
