@@ -23,12 +23,16 @@
             rofi
             rofimoji
             rofi-bluetooth
+            rofi-pulse-select
             lutris
             vulkan-tools
             (wineWowPackages.full.override {
                 wineRelease = "staging";
                 mingwSupport = true;
             })
+
+            youtube-tui
+            wiki-tui
 
             #(steam-tui.overrideAttrs({
             #    src = pkgs.fetchFromGitHub {
@@ -50,8 +54,6 @@
 
             nil
 
-            haskellPackages.haskell-language-server
-            haskellPackages.xmobar
 
             (picom.overrideAttrs({
                 src = pkgs.fetchFromGitHub {
@@ -61,7 +63,10 @@
                     sha256 = "0iff4bwpc00xbjad0m000midslgx12aihs33mdvfckr75r114ylh";
                 };
             }))
-        ];
+        ] ++ (with pkgs.haskellPackages; [
+            haskell-language-server
+            xmobar
+        ]);
 
         sessionVariables = {
             NIX_DATA_DIR = "$HOME/.local/etc/nix";

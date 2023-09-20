@@ -92,8 +92,8 @@ myKeys =
     [ ("M-C-r"          , spawn "xmonad --recompile"                                    )
     , ("M-C-r"          , spawn "xmonad --restart"                                      )
     , ("M-S-q"          , io exitSuccess                                                )
-    , ("M-S-c"          , kill1                                                         )
-    , ("M-S-a"          , killAll                                                       )
+    , ("M-S-;"          , kill1                                                         )
+    , ("M-C-S-;"        , killAll                                                       )
     , ("M-f"            , sendMessage (T.Toggle "floats")                               )
     , ("M-S-s"          , sendMessage BSP.Swap                                          )
     , ("M-S-r"          , sendMessage BSP.Rotate                                        )
@@ -104,12 +104,14 @@ myKeys =
     , ("M-t"            , withFocused $ windows . W.sink                                )
     , ("M-S-t"          , sinkAll                                                       )
     , ("M-<Space>"      , sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts    )
-    , ("M-S-<Return>"   , spawn "rofi -show drun -theme $XDG_CONFIG_HOME/rofi/theme.rasi" )
+    , ("M-S-<Return>"   , spawn "rofi -show drun"                                       )
     , ("M-<Return>"     , spawn myTerminal                                              )
     , ("M-S-e"          , spawn "rofimoji"                                              )
     , ("M-S-b"          , spawn "rofi-bluetooth"                                        )
+    , ("M-S-i"          , spawn "rofi-pulse-select source"                              )
+    , ("M-S-o"          , spawn "rofi-pulse-select sink"                                )
     , ("<Print>"        , spawn $ "scrot " ++ screenshotPath                            )
-    , ("M-<Print>"      , spawn $ "scrot --select " ++ screenshotPath                            )
+    , ("M-<Print>"      , spawn $ "scrot --select " ++ screenshotPath                   )
     ]
     ++ concatMap (\ws -> switchWorkspace ws : [ sendToWorkspace ws ]) myWorkspaces
 
