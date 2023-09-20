@@ -30,6 +30,15 @@
                 mingwSupport = true;
             })
 
+            #(steam-tui.overrideAttrs({
+            #    src = pkgs.fetchFromGitHub {
+            #        owner = "midorishibukawa";
+            #        repo = "steam-tui";
+            #        rev = "70cefd70dbf6389098d0c0984db1743e6aca2230";
+            #        sha256 = "ei1HnEL38ZxkXFCliW3ZAt5CQuybgT47cav5u7dOcW4=";
+            #    };
+            #}))
+
             neofetch
 
             cabal-install
@@ -47,9 +56,9 @@
             (picom.overrideAttrs({
                 src = pkgs.fetchFromGitHub {
                     repo = "picom";
-                        owner = "ibhagwan";
-                        rev = "44b4970f70d6b23759a61a2b94d9bfb4351b41b1";
-                        sha256 = "0iff4bwpc00xbjad0m000midslgx12aihs33mdvfckr75r114ylh";
+                    owner = "ibhagwan";
+                    rev = "44b4970f70d6b23759a61a2b94d9bfb4351b41b1";
+                    sha256 = "0iff4bwpc00xbjad0m000midslgx12aihs33mdvfckr75r114ylh";
                 };
             }))
         ];
@@ -67,7 +76,7 @@
     };
         
         gtk = {
-            enable = true;
+            enable = false;
             theme = {
                 name = "lightly";
                 package = pkgs.lightly-boehs;
@@ -177,7 +186,7 @@
                 recursive = true;
             };
             rofi = {
-                source = ./config/rofi/files;
+                source = ./config/rofi;
                 recursive = true; 
             };
             xmonad = {

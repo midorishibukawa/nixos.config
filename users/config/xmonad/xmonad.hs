@@ -28,6 +28,7 @@ import XMonad.Util.SpawnOnce
 import System.Exit (exitSuccess)
 import System.IO (hPutStrLn)
 import qualified Data.Map as M
+import qualified XMonad.Layout.BinarySpacePartition as BSP
 import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(Toggle))
 import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
 import qualified XMonad.StackSet as W
@@ -89,16 +90,22 @@ myRemovedKeys = concatMap (generateKey . show) [4..6]
 myKeys :: [(String, X ())]
 myKeys =
     [ ("M-C-r"          , spawn "xmonad --recompile"                                    )
-    , ("M-S-r"          , spawn "xmonad --restart"                                      )
+    , ("M-C-r"          , spawn "xmonad --restart"                                      )
     , ("M-S-q"          , io exitSuccess                                                )
-    , ("M-S-<Return>"   , spawn "rofi -show drun"                                       )
-    , ("M-<Return>"     , spawn myTerminal                                              )
     , ("M-S-c"          , kill1                                                         )
     , ("M-S-a"          , killAll                                                       )
     , ("M-f"            , sendMessage (T.Toggle "floats")                               )
+    , ("M-S-s"          , sendMessage BSP.Swap                                          )
+    , ("M-S-r"          , sendMessage BSP.Rotate                                        )
+    , ("M-S-h"          , sendMessage $ BSP.ExpandTowards BSP.L                         )
+    , ("M-S-j"          , sendMessage $ BSP.ExpandTowards BSP.D                         )
+    , ("M-S-k"          , sendMessage $ BSP.ExpandTowards BSP.U                         )
+    , ("M-S-l"          , sendMessage $ BSP.ExpandTowards BSP.R                         )
     , ("M-t"            , withFocused $ windows . W.sink                                )
     , ("M-S-t"          , sinkAll                                                       )
     , ("M-<Space>"      , sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts    )
+    , ("M-S-<Return>"   , spawn "rofi -show drun -theme $XDG_CONFIG_HOME/rofi/theme.rasi" )
+    , ("M-<Return>"     , spawn myTerminal                                              )
     , ("M-S-e"          , spawn "rofimoji"                                              )
     , ("M-S-b"          , spawn "rofi-bluetooth"                                        )
     , ("<Print>"        , spawn $ "scrot " ++ screenshotPath                            )
@@ -120,12 +127,12 @@ mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 windowCount :: X (Maybe String)
 windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
 
-tall = renamed [Replace "tall"]
+binary = renamed [Replace "binary"]
         $ windowNavigation
         $ subLayout [] (smartBorders Simplest)
-        $ limitWindows 12
-        $ mySpacing 2
-        $ ResizableTall 1 (3/100) (1/2) []
+        $ limitWindows 12 
+        $ mySpacing 2 
+        BSP.emptyBSP
 
 floats = renamed [Replace "floats"]
         $ windowNavigation
@@ -136,7 +143,7 @@ myLayoutHook = avoidStruts
                 $ mouseResize
                 $ windowArrange
                 $ T.toggleLayouts floats
-                $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) tall
+                $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) binary
 
 myBorderWidth :: Dimension
 myBorderWidth = 0
@@ -159,7 +166,7 @@ main = do
         , logHook = workspaceHistoryHook <+> myLogHook <+> dynamicLogWithPP xmobarPP
             { ppOutput          = hPutStrLn xmproc
             , ppCurrent         = \_ -> myColor Love "\xf111 "
-            , ppVisible         = \_ -> myColor Text "\xf1db "
+            , ppVisible         = \_ -> myColor Subtle "\xf1db "
             , ppHidden          = \_ -> myColor Muted "\xf111 "
             , ppHiddenNoWindows = \_ -> myColor Muted "\xf1db "
             , ppTitle           = myColor Text . shorten 60
