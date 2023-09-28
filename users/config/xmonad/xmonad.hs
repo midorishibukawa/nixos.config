@@ -41,18 +41,6 @@ myFont = "xft:SauceCodePro Nerd Font:regular:size=11:antialias=true:hinting=true
 myTerminal :: String
 myTerminal = "kitty"
 
-myWorkspaces :: [(Int, String)]
-myWorkspaces = map (\i -> (i, show $ if i == 10 then 0 else i)) $ [1..3] ++ [8..10]
-
-myWorkspaces' :: [String]
-myWorkspaces' = map snd myWorkspaces
-
-switchWorkspace :: (Int, String) -> (String, X ())
-switchWorkspace (i, kb) = ("M-" ++ kb, windows $ W.greedyView kb)
-
-sendToWorkspace :: (Int, String) -> (String, X ())
-sendToWorkspace (i, kb)  = ("M-S-" ++ kb, windows $ W.shift kb)
-
 defaultColor :: String
 defaultColor = "#faf4ed"
 
@@ -81,12 +69,6 @@ myColor colorName = case M.lookup colorName myColors of
     Just color -> xmobarColor color ""
     Nothing    -> xmobarColor defaultColor ""
 
-screenshotPath :: String
-screenshotPath = "$HOME/media/images/screenshots/$(date +%Y-%m-%d_%H-%M-%S).jpg"
-
-myRemovedKeys :: [String]
-myRemovedKeys = concatMap (generateKey . show) [4..6]
-
 myKeys :: [(String, X ())]
 myKeys =
     [ ("M-C-r"          , spawn "xmonad --recompile"                                    )
@@ -97,10 +79,6 @@ myKeys =
     , ("M-f"            , sendMessage (T.Toggle "floats")                               )
     , ("M-S-s"          , sendMessage BSP.Swap                                          )
     , ("M-S-r"          , sendMessage BSP.Rotate                                        )
-    , ("M-S-h"          , sendMessage $ BSP.ExpandTowards BSP.L                         )
-    , ("M-S-j"          , sendMessage $ BSP.ExpandTowards BSP.D                         )
-    , ("M-S-k"          , sendMessage $ BSP.ExpandTowards BSP.U                         )
-    , ("M-S-l"          , sendMessage $ BSP.ExpandTowards BSP.R                         )
     , ("M-t"            , withFocused $ windows . W.sink                                )
     , ("M-S-t"          , sinkAll                                                       )
     , ("M-<Space>"      , sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts    )
@@ -110,14 +88,43 @@ myKeys =
     , ("M-S-b"          , spawn "rofi-bluetooth"                                        )
     , ("M-S-i"          , spawn "rofi-pulse-select source"                              )
     , ("M-S-o"          , spawn "rofi-pulse-select sink"                                )
+    , ("M-S-'"          , spawn "kitty htop"                                            )
     , ("<Print>"        , spawn $ "scrot " ++ screenshotPath                            )
-    , ("M-<Print>"      , spawn $ "scrot --select " ++ screenshotPath                   )
+    , ("S-<Print>"      , spawn $ "scrot --select " ++ screenshotPath                   )
+    , ("M-S-w"          , spawn "kitty wiki-tui"                                        )
     ]
-    ++ concatMap (\ws -> switchWorkspace ws : [ sendToWorkspace ws ]) myWorkspaces
+    ++ map (\(k, dir) -> ("M-S-" ++ k, sendMessage $ BSP.ExpandTowards dir)) bspKeyDirTuple
+    ++ concatMap (\ws -> switchWorkspace ws : [sendToWorkspace ws]) myWorkspaces
 
+
+bspKeyDirTuple :: [(String, BSP.Direction2D)]
+bspKeyDirTuple = 
+    [ ("h", BSP.L)
+    , ("j", BSP.D)
+    , ("k", BSP.U)
+    , ("l", BSP.R)
+    ]    
+
+myWorkspaces :: [(Int, String)]
+myWorkspaces = map (\i -> (i, show $ if i == 10 then 0 else i)) $ [1..3] ++ [8..10]
+
+myWorkspaces' :: [String]
+myWorkspaces' = map snd myWorkspaces
+
+switchWorkspace :: (Int, String) -> (String, X ())
+switchWorkspace (i, kb) = ("M-" ++ kb, windows $ W.greedyView kb)
+
+sendToWorkspace :: (Int, String) -> (String, X ())
+sendToWorkspace (i, kb)  = ("M-S-" ++ kb, windows $ W.shift kb)
 
 generateKey :: String -> [String]
 generateKey i = ("M-" ++ i) : ["M-S-" ++ i]
+
+screenshotPath :: String
+screenshotPath = "$HOME/media/images/screenshots/$(date +%Y-%m-%d_%H-%M-%S).jpg"
+
+myRemovedKeys :: [String]
+myRemovedKeys = concatMap (generateKey . show) [4..6]
 
 
 myLogHook :: X ()
@@ -127,7 +134,15 @@ mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spaci
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
 windowCount :: X (Maybe String)
-windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
+windowCount = gets 
+            $ Just 
+            . show 
+            . length 
+            . W.integrate' 
+            . W.stack 
+            . W.workspace 
+            . W.current 
+            . windowset
 
 binary = renamed [Replace "binary"]
         $ windowNavigation
@@ -167,12 +182,12 @@ main = do
         , startupHook = myStartupHook
         , logHook = workspaceHistoryHook <+> myLogHook <+> dynamicLogWithPP xmobarPP
             { ppOutput          = hPutStrLn xmproc
-            , ppCurrent         = \_ -> myColor Love "\xf111 "
-            , ppVisible         = \_ -> myColor Subtle "\xf1db "
-            , ppHidden          = \_ -> myColor Muted "\xf111 "
-            , ppHiddenNoWindows = \_ -> myColor Muted "\xf1db "
+            , ppCurrent         = \_ -> myColor Love    "\xf111 "
+            , ppVisible         = \_ -> myColor Subtle  "\xf1db "
+            , ppHidden          = \_ -> myColor Muted   "\xf111 "
+            , ppHiddenNoWindows = \_ -> myColor Muted   "\xf1db "
             , ppTitle           = myColor Text . shorten 60
-            , ppUrgent          = \_ -> myColor Rose "\xf06a "
+            , ppUrgent          = \_ -> myColor Rose    "\xf06a "
             , ppSep             = "\xf460 "
             , ppOrder           = \(ws:_:t:_) -> ws : [t]
             }

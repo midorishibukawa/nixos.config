@@ -31,6 +31,7 @@
             bitwarden
             bitwarden-cli
             feh
+            htop-vim
             greetd.tuigreet
             xmonad-with-packages
             xorg.xmodmap
@@ -62,6 +63,7 @@
     nixpkgs.config.allowUnfree = true;
 
     programs = {
+        dconf.enable = true;
         steam = {
             enable = true;
             remotePlay.openFirewall = true;

@@ -10,6 +10,6 @@ Config { font    = "xft:SauceCodePro Nerd Font Mono:weight=bold:pixelsize=11:ant
                     , Run UnsafeStdinReader
                     ]
        , template = "  %UnsafeStdinReader% } <action=xdotool key super+shift+return>%date%</action> {"
-       , sepChar = "%"
+       , sepChar = "%" 
        , alignSep = "}{"
        }

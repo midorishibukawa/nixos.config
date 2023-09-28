@@ -23,7 +23,7 @@
         };
     in {
         nixosConfigurations = {
-            midori-nixos = lib.nixosSystem {
+            nixos = lib.nixosSystem {
                 inherit system;
 
                 modules = [

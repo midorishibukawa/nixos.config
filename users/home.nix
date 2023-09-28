@@ -5,7 +5,10 @@
         username = "midori";
         homeDirectory = "/home/midori";
         stateVersion = "23.05";
-
+        file.".local/bin" = {
+            source = ../bin;
+            recursive = true;
+        };
         packages = with pkgs; [
             chromium
             firefox
@@ -13,11 +16,14 @@
             gnupg
             pinentry
 
+            capitaine-cursors
             lightly-boehs
             appimage-run
             pavucontrol
             p7zip
             scrot
+            ryujinx
+            htop-vim
             xclip
             xdotool
             rofi
@@ -33,6 +39,7 @@
 
             youtube-tui
             wiki-tui
+            qbittorrent
 
             #(steam-tui.overrideAttrs({
             #    src = pkgs.fetchFromGitHub {
@@ -45,10 +52,14 @@
 
             neofetch
 
+            bun
+            gcc
             cabal-install
+            winetricks
             cabal2nix
             ghc
             stylish-haskell
+            gnumake
 
             lua-language-server
 
@@ -66,6 +77,8 @@
         ] ++ (with pkgs.haskellPackages; [
             haskell-language-server
             xmobar
+        ]) ++ (with pkgs.nodePackages; [
+            typescript-language-server
         ]);
 
         sessionVariables = {
@@ -77,14 +90,19 @@
             XDG_STATE_HOME = "$HOME/.local/state";
             STARSHIP_CONFIG = "$XDG_CONFIG_HOME/starship.toml";
             ZDOTDIR = "XDG_CONFIG_HOME/zsh";
+            NIXOS_CONFIG_DIR = "$HOME/.local/config/nixos.config";
         };
     };
         
         gtk = {
-            enable = false;
+            enable = true;
             theme = {
                 name = "lightly";
                 package = pkgs.lightly-boehs;
+            };
+            cursorTheme = {
+                name = "capitaine";
+                package = pkgs.capitaine-cursors;
             };
         };
     
@@ -154,7 +172,6 @@
                 gps = "git push";
                 gpl = "git pull";
                 gs = "git status";
-                update = "$XDG_CONFIG_HOME/nixos.config/bin/update";
                 vi = "nvim .";
                 v = "nvim";
             };
