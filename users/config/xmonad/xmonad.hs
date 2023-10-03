@@ -169,6 +169,7 @@ myStartupHook :: X ()
 myStartupHook = do
     spawnOnce "picom --config $XDG_CONFIG_HOME/picom/picom.conf"
     spawnOnce "feh --bg-center $XDG_STATE_HOME/background.png"
+    spawnOnce "xinput --set-prop 9 296 1"
 
 main = do
     xmproc <- spawnPipe "xmobar $XDG_CONFIG_HOME/xmonad/xmobar.hs"

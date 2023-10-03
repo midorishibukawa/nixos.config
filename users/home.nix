@@ -15,11 +15,16 @@
             tmux  
             gnupg
             pinentry
+            flatpak
 
+            (blender.override { cudaSupport = true; })
             capitaine-cursors
             lightly-boehs
             appimage-run
             pavucontrol
+            vlc
+            ffmpeg
+            kdenlive
             p7zip
             scrot
             ryujinx
@@ -29,9 +34,13 @@
             rofi
             rofimoji
             rofi-bluetooth
+            rofi-calc
             rofi-pulse-select
+            rofi-systemd
             lutris
             vulkan-tools
+            gamemode
+            obs-studio
             (wineWowPackages.full.override {
                 wineRelease = "staging";
                 mingwSupport = true;
@@ -65,7 +74,6 @@
 
             nil
 
-
             (picom.overrideAttrs({
                 src = pkgs.fetchFromGitHub {
                     repo = "picom";
@@ -75,10 +83,13 @@
                 };
             }))
         ] ++ (with pkgs.haskellPackages; [
+            greenclip
             haskell-language-server
             xmobar
         ]) ++ (with pkgs.nodePackages; [
             typescript-language-server
+        ]) ++ (with pkgs.libsForQt5; [
+            kdenlive
         ]);
 
         sessionVariables = {
@@ -163,6 +174,7 @@
             enable = true;
 
             shellAliases = {
+                dev = "nix develop -c $SHELL";
                 ls = "ls -a --color=auto";
                 ll = "ls -lah --color=auto";
                 ga = "git add";
@@ -184,6 +196,8 @@
                 { name = "zsh-users/zsh-completions";               }
                 { name = "zsh-users/zsh-history-substring-search";  }
                 { name = "jeffreytse/zsh-vi-mode";                  }
+                { name = "agkozak/zsh-z";                           }
+                { name = "desyncr/auto-ls";                          }
                 ];
             };
         };

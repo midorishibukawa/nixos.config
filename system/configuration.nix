@@ -31,6 +31,7 @@
             bitwarden
             bitwarden-cli
             feh
+            cudatoolkit
             htop-vim
             greetd.tuigreet
             xmonad-with-packages
@@ -82,6 +83,7 @@
 
     services = { 
         blueman.enable = true;
+        flatpak.enable = true;
         printing.enable = true;
 
         greetd = {
@@ -111,6 +113,7 @@
             };
             enable = true;
             layout = "br";
+            libinput.touchpad.naturalScrolling = true;
             videoDrivers = ["nvidia"];
             xkbVariant = "";
             xkbOptions = "caps:escape";
@@ -126,6 +129,10 @@
     sound.enable = true;
 
     time.timeZone = "America/Sao_Paulo";
+    xdg.portal = {
+        enable = true;
+        extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    };
 
     users = {
         defaultUserShell = pkgs.zsh;

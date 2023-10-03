@@ -53,9 +53,9 @@
       package = config.boot.kernelPackages.nvidiaPackages.stable;
       powerManagement.enable = true;
       prime = {
-        # offload.enable = true;
-	# intelBusId = "";
-	# nvidiaBusId = "";
+        sync.enable = true;
+	    intelBusId = "PCI:0:0:0";
+	    nvidiaBusId = "PCI:1:0:0";
       };
     };
 
