@@ -5,19 +5,41 @@
         username = "midori";
         homeDirectory = "/home/midori";
         stateVersion = "23.05";
-        file.".local/bin" = {
-            source = ../bin;
-            recursive = true;
+        file = {
+            ".icons/default".source = "${pkgs.capitaine-cursors}/share/icons/capitaine-cursors-white";
+            ".local/bin" = {
+                source = ../bin;
+                recursive = true;
+            };
         };
         packages = with pkgs; [
+            clipcat
+            nixops
+            google-cloud-sdk
+            steam-tui
+            qemu
+            psmisc
+            librewolf
+            ardour
+            docker
             chromium
             firefox
             tmux  
             gnupg
             pinentry
             flatpak
-
-            (blender.override { cudaSupport = true; })
+            discord
+            (retroarch.override {
+                cores = with libretro; [
+                    desmume
+                    mgba
+                    sameboy
+                ];
+            })
+            gimp
+            guvcview
+            steamcmd
+            prismlauncher
             capitaine-cursors
             lightly-boehs
             appimage-run
@@ -40,6 +62,7 @@
             lutris
             vulkan-tools
             gamemode
+            xsane
             obs-studio
             (wineWowPackages.full.override {
                 wineRelease = "staging";
@@ -62,7 +85,8 @@
             neofetch
 
             bun
-            gcc
+            ccls
+            clang
             cabal-install
             winetricks
             cabal2nix
@@ -87,6 +111,7 @@
             haskell-language-server
             xmobar
         ]) ++ (with pkgs.nodePackages; [
+            live-server
             typescript-language-server
         ]) ++ (with pkgs.libsForQt5; [
             kdenlive
@@ -118,7 +143,16 @@
         };
     
 
-    nixpkgs.config.allowUnfree = true;
+    nixpkgs.config = {
+        permittedInsecurePackages = [
+            "electron-24.8.6"
+            "python-2.7.18.6"
+            "python2.7-certifi-2021.10.8"
+            "python2.7-pyjwt-1.7.1"
+            "openssl-1.1.1w"
+        ];
+        allowUnfree = true;
+    };
 
     programs = {
         home-manager.enable = true;

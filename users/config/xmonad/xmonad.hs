@@ -33,6 +33,7 @@ import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(T
 import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
 import qualified XMonad.StackSet as W
 import Data.Time
+import Data.Monoid
 import Control.Monad.Cont (MonadIO(liftIO))
 
 myFont :: String
@@ -170,11 +171,18 @@ myStartupHook = do
     spawnOnce "picom --config $XDG_CONFIG_HOME/picom/picom.conf"
     spawnOnce "feh --bg-center $XDG_STATE_HOME/background.png"
     spawnOnce "xinput --set-prop 9 296 1"
+    spawnOnce "xmodmap -e \"keycode 9 = apostrophe quotedbl apostrophe quotedbl\""
+    spawnOnce "fcitx"
+
+myManageHook :: XMonad.Query (Data.Monoid.Endo WindowSet)
+myManageHook = composeAll
+    [ className =? "Timberborn" --> doFloat
+    ]
 
 main = do
     xmproc <- spawnPipe "xmobar $XDG_CONFIG_HOME/xmonad/xmobar.hs"
     xmonad $ ewmh $ docks $ def
-        { manageHook = manageDocks
+        { manageHook = myManageHook <+> manageDocks
         , layoutHook = myLayoutHook
         , modMask = mod4Mask
         , terminal = myTerminal

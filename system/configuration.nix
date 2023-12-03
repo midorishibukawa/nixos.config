@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, musnix, ... }:
 
 {
     imports = [ ];
@@ -28,8 +28,7 @@
         };
 
         systemPackages = with pkgs; [
-            bitwarden
-            bitwarden-cli
+            libjack2 jack2 qjackctl pavucontrol jack2Full jack_capture
             feh
             cudatoolkit
             htop-vim
@@ -39,12 +38,41 @@
         ];
     };
     
-    fonts.fonts = with pkgs; [
-        (nerdfonts.override { fonts = [ "JetBrainsMono" "SourceCodePro" ]; })
-    ];
+    fonts = {
+        fontconfig = {
+            defaultFonts = {
+                monospace = [
+                    "JetBrainsMono"
+                    "SourceCodePro"
+                ];
+                sansSerif = [
+                    "SourceSansPro"
+                    "IPAPGothic"
+                ];
+                serif = [
+                    "SourceSerifPro"
+                    "IPAPMincho"
+                ];
+            };
+        };
+        # packages = with pkgs; [
+        fonts = with pkgs; [
+            ipafont
+            kochi-substitute
+            (nerdfonts.override { fonts = [ "JetBrainsMono" "SourceCodePro" ]; })
+        ];
+    };
 
     i18n = {
         defaultLocale = "en_GB.UTF-8";
+
+        inputMethod = {
+            enabled = "fcitx5";
+            fcitx5.addons = with pkgs; [
+                fcitx5-mozc
+                fcitx5-gtk
+            ];
+        };
 
         extraLocaleSettings = {
             LC_ADDRESS = "pt_BR.UTF-8";
@@ -59,7 +87,15 @@
         };
     };
 
-    nix.settings.experimental-features = [ "nix-command" "flakes" ];
+    networking.firewall = {
+        allowedTCPPorts = [ 3000 ];
+        allowedUDPPorts = [ 53 ];
+    };
+
+    nix = {
+        optimise.automatic = true;
+        settings.experimental-features = [ "nix-command" "flakes" ];
+    };
 
     nixpkgs.config.allowUnfree = true;
 
@@ -81,20 +117,18 @@
 
     security.rtkit.enable = true;
 
-    services = { 
+    services = {
+        adguardhome = {
+            enable = true;
+            openFirewall = true;
+            settings = {
+                bind_port = 3000;
+                schema_version = 20;
+            };
+        };
         blueman.enable = true;
         flatpak.enable = true;
         printing.enable = true;
-
-        greetd = {
-            enable = false;
-            settings = {
-                default_session = {
-                    command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd $SHELL";
-                    user = "midori";
-                };
-            };
-        };
 
         pipewire = {
             enable = true;
@@ -109,11 +143,10 @@
         xserver = {
             displayManager = {
   		        lightdm.enable = true;
-                sessionCommands = "xmodmap -e \"keycode 9 = apostrophe quotedbl apostrophe quotedbl\"";
             };
             enable = true;
             layout = "br";
-            libinput.touchpad.naturalScrolling = true;
+            libinput.mouse.naturalScrolling = true;
             videoDrivers = ["nvidia"];
             xkbVariant = "";
             xkbOptions = "caps:escape";
@@ -126,10 +159,29 @@
         };
     };
 
+    boot.kernelModules = [ "snd-seq" "snd-rawmidi" ];
+    hardware.pulseaudio.package = pkgs.pulseaudio.override { jackaudioSupport = true; };
+    security.sudo.extraConfig = ''
+        moritz ALL=(ALL) NOPASSWD: ${pkgs.systemd}/bin/systemctl
+    '';
+
+    musnix = {
+        enable = true;
+        alsaSeq.enable = false;
+        rtirq = {
+            resetAll = 1;
+            prioLow = 0;
+            enable = true;
+            nameList = "rtc9 snd";
+        };
+    };
+
     sound.enable = true;
 
     time.timeZone = "America/Sao_Paulo";
+
     xdg.portal = {
+        # config.common.default = "*";
         enable = true;
         extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     };
@@ -140,7 +192,7 @@
         users.midori = {
             isNormalUser = true;
             description = "midori";
-            extraGroups = [ "networkmanager" "wheel" ];
+            extraGroups = [ "networkmanager" "wheel" "scanner" "docker" "jackaudio" "audio" ];
         };
     };
 

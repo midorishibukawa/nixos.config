@@ -40,6 +40,6 @@ config.lua_ls.setup { on_attach = on_attach  }
 config.rust_analyzer.setup { on_attach = on_attach }
 config.tsserver.setup { on_attach = on_attach }
 config.ocamllsp.setup { on_attach = on_attach }
-
+config.clangd.setup { on_attach = on_attach } 
 
 lsp.setup()

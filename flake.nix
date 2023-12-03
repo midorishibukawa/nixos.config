@@ -11,9 +11,10 @@
             url = "github:nix-community/nixvim/nixos-23.05";
             inputs.nixpkgs.follows = "nixpkgs";
         };
+        musnix = { url = "github:musnix/musnix"; };
     };
 
-    outputs = { nixpkgs, home-manager, nixvim, ... }: 
+    outputs = { nixpkgs, home-manager, nixvim, musnix, ... }: 
     let
         lib = nixpkgs.lib;
         system = "x86_64-linux";
@@ -29,6 +30,7 @@
                 modules = [
                     ./system/configuration.nix
                     ./system/hosts/desktop.nix
+                    musnix.nixosModules.musnix
                 ];
             };
         };

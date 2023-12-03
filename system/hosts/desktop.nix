@@ -69,6 +69,11 @@
       enable = false;
       support32Bit = true;
     };
+
+    sane = {
+        enable = true;
+        extraBackends = [ pkgs.epkowa ];
+    };
   };
   
   networking = {
